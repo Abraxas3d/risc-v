@@ -95,12 +95,32 @@
    $imm_valid = $is_u_instr || $is_i_instr || $is_s_instr || $is_b_instr || $is_j_instr;
    
    
+   //determine specific instruction
+   
+   //for convenience
+   $dec_bits[10:0] = {$instr[30],$funct3,$opcode};
    
    
    
+   //identify an instruction (example from lecture, x means 'do not care')
+   $is_beq = $dec_bits ==? 11'bx_000_1100011; //test passes, then $is_beq is true
+   
+   //we implement the rest of them 
+   $is_bne = $dec_bits ==? 11'bx_001_1100011;
+   $is_blt = $dec_bits ==? 11'bx_100_1100011;
+   $is_bge = $dec_bits ==? 11'bx_101_1100011;
+   $is_bltu = $dec_bits ==? 11'bx_110_1100011;
+   $is_bgeu = $dec_bits ==? 11'bx_111_1100011;
+   $is_addi = $dec_bits ==? 11'bx_000_0010011;
+   $is_add = $dec_bits ==? 11'b0_000_0110011;
    
    //turn off the warnings about dangling stuff
-   `BOGUS_USE($rd $rd_valid $rs1 $rs1_valid $rs2 $rs2_valid $funct3 $funct3_valid $imm_valid $opcode $opcode_valid $imm) 
+   `BOGUS_USE($rd $rd_valid $rs1 $rs1_valid $rs2 $rs2_valid 
+      $funct3 $funct3_valid $imm_valid $opcode $opcode_valid $imm
+      $is_bne $is_blt $is_bge $is_bltu $is_bgeu $is_addi $is_add
+      $is_beq) 
+   
+   
    
    // Assert these to end simulation (before Makerchip cycle limit).
    *passed = 1'b0;
